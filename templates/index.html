@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Jurusan UTB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --primary-blue: #2563eb;
+            --primary-green: #10b981;
+            --blue-hover: #1d4ed8;
+            --green-hover: #059669;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-glow: rgba(16, 185, 129, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Decorative background blobs (Blue and Green theme) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(37, 99, 235, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* NAVBAR */
+        nav {
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Logo panjang on navbar (logo sampingnya text) */
+        .logo-long-img {
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .nav-badge {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--primary-green);
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 5rem 0 4rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo kotak on hero (logo diatas bawahnya text) */
+        .logo-box-wrapper {
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .logo-box-img {
+            height: 120px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.15), rgba(16, 185, 129, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: var(--text-light);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            animation: fadeInUp 0.7s ease 0.1s both;
+        }
+
+        .hero h1 span.blue {
+            color: #3b82f6;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 span.green {
+            color: var(--primary-green);
+            background: linear-gradient(to right, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+            font-weight: 400;
+            animation: fadeInUp 0.7s ease 0.2s both;
+        }
+
+        .btn-mulai {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: var(--text-light);
+            padding: 1.1rem 2.8rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.25);
+            animation: fadeInUp 0.7s ease 0.3s both;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-mulai:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-mulai svg {
+            transition: transform 0.3s;
+        }
+
+        .btn-mulai:hover svg {
+            transform: translateX(5px);
+        }
+
+        /* STATS GRID */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin: 3rem 0 5rem;
+            animation: fadeInUp 0.7s ease 0.4s both;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 50px;
+            background: var(--border-color);
+            align-self: center;
+        }
+
+        /* CARA KERJA SECTION */
+        .workflow {
+            padding: 4rem 0 6rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .workflow-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 3.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .workflow-title span {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px var(--accent-glow);
+        }
+
+        .step-num {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(16, 185, 129, 0.2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .step-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2.5rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        footer strong {
+            color: var(--primary-green);
+        }
+
+        /* KEYFRAMES */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-steps {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .stats {
+                gap: 1.5rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            .stat-divider {
+                display: none;
+            }
+            .hero {
+                padding: 3rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    
+    <div class="container">
+        <!-- NAVBAR -->
+        <nav>
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="Logo UTB" class="logo-long-img">
+            </div>
+            <div class="nav-badge">⚡ Forward Chaining</div>
+        </nav>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="logo-box-wrapper">
+                <img src="{{ url_for('static', filename='images/logo-kotak.png') }}" alt="Logo UTB" class="logo-box-img">
+            </div>
+            <div class="hero-tag">🎓 Sistem Pakar Rekomendasi Jurusan</div>
+            <h1>Pilih Jurusan UTB dengan <br><span class="blue">Minat</span> &amp; <span class="green">Nilai Rapor</span></h1>
+            <p>Bingung pilih jurusan di Universitas Teknologi Bandung? Yuk, cari tahu jurusan yang paling cocok dengan minat dan nilai rapormu lewat sistem pakar kami!</p>
+            <a href="/mulai" class="btn-mulai">
+                Mulai Konsultasi
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+            </a>
+        </section>
+
+        <!-- STATS -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-val">5</span>
+                <span class="stat-label">Jurusan UTB</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-val">10</span>
+                <span class="stat-label">Kriteria Analisis</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-val">100%</span>
+                <span class="stat-label">Logika Pakar</span>
+            </div>
+        </div>
+
+        <!-- CARA KERJA -->
+        <section class="workflow">
+            <h2 class="workflow-title">Bagaimana <span>Cara Kerjanya?</span></h2>
+            <div class="grid-steps">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <h3>Input Nilai &amp; Minat</h3>
+                    <p>Masukkan nilai rapor dari 4 mata pelajaran utama dan centang beberapa minat &amp; bakat yang kamu miliki.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <h3>Forward Chaining</h3>
+                    <p>Mesin inferensi akan mencocokkan kriteria akademis (Kelayakan ≥ 80) dan minat kamu secara deduktif.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <h3>Hasil Rekomendasi</h3>
+                    <p>Sistem merekomendasikan program studi UTB yang paling relevan beserta analisis alasan keputusan pakar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Dibuat untuk Tugas <strong>Sistem Pakar</strong> · Universitas Teknologi Bandung · 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

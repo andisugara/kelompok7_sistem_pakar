@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Analisis Jurusan - Sistem Pakar UTB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --primary-blue: #2563eb;
+            --primary-green: #10b981;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-glow: rgba(16, 185, 129, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Ambient Glows */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+            width: 100%;
+        }
+
+        /* NAVBAR */
+        nav {
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+        }
+
+        .logo-long-img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .btn-ulang {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            color: #60a5fa;
+            padding: 0.55rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-ulang:hover {
+            background: rgba(37, 99, 235, 0.2);
+            color: #93c5fd;
+            transform: translateY(-1px);
+        }
+
+        /* HEADER */
+        .result-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .result-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .result-header h1 span {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* SUMMARY BOXES */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .summary-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.75rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-box h3 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .fakta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .fakta-tag {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--primary-green);
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nilai-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nilai-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .nilai-subject {
+            color: var(--text-muted);
+        }
+
+        .nilai-score {
+            font-weight: 700;
+        }
+
+        .nilai-score.met {
+            color: var(--primary-green);
+        }
+
+        .nilai-score.unmet {
+            color: var(--text-muted);
+        }
+
+        /* JURUSAN SECTION */
+        .section-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            font-weight: 700;
+        }
+
+        .jurusan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .jurusan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.25rem;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .jurusan-card:hover {
+            border-color: rgba(16, 185, 129, 0.25);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .jurusan-card.top-pick {
+            border-color: rgba(37, 99, 235, 0.3);
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.05) 0%, rgba(15, 23, 42, 0.6) 100%);
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.25rem;
+        }
+
+        .rank-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rank-1 { background: rgba(37, 99, 235, 0.15); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.3); }
+        .rank-2 { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+        .rank-3 { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .rank-other { background: rgba(255, 255, 255, 0.06); color: var(--text-muted); }
+
+        .jurusan-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-light);
+            line-height: 1.2;
+        }
+
+        .jurusan-kode {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .skor-box {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .skor-val {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1;
+        }
+
+        .skor-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        /* ALASAN SISTEM (PENJELASAN PAKAR) */
+        .alasan-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .alasan-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .alasan-text {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .deskripsi {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* PROSPEK KARIR */
+        .prospek-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .prospek-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .prospek-text {
+            font-size: 0.9rem;
+            color: #93c5fd;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* DEDUCTIVE PROOF TRACE */
+        .trace-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.25rem;
+        }
+
+        .trace-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trace-item {
+            font-size: 0.75rem;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .trace-item.proven {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--primary-green);
+        }
+
+        .trace-arrow {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* FALLBACK SECTION */
+        .no-result-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 4rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            margin-bottom: 4rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Fallback centered logo */
+        .fallback-logo-wrapper {
+            margin-bottom: 2rem;
+        }
+
+        .fallback-logo-img {
+            height: 90px;
+            object-fit: contain;
+            opacity: 0.85;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .no-result-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .no-result-card h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .no-result-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 550px;
+            margin-bottom: 2rem;
+        }
+
+        /* RESULTS ACTIONS */
+        .actions-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 2.2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-action-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: var(--text-light);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-action-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35);
+            filter: brightness(1.1);
+        }
+
+        .btn-action-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-action-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2.5rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        footer strong {
+            color: var(--primary-green);
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .skor-box {
+                text-align: left;
+                margin-top: 0.5rem;
+            }
+            .jurusan-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- NAVBAR -->
+        <nav>
+            <a href="/" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="Logo UTB" class="logo-long-img">
+            </a>
+            <a href="/reset" class="btn-ulang">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Ulangi Konsultasi
+            </a>
+        </nav>
+
+        <header class="result-header">
+            <h1>Hasil <span>Analisis Jurusan</span> Anda</h1>
+            <p>Berdasarkan kecocokan aturan pakar terhadap kriteria akademik dan minat Anda.</p>
+        </header>
+
+        <!-- SUMMARY INFO -->
+        <div class="summary-grid">
+            <!-- Collected Facts -->
+            <div class="summary-box">
+                <h3>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Fakta yang Terkumpul ({{ label_fakta|length }})
+                </h3>
+                {% if label_fakta %}
+                <div class="fakta-tags">
+                    {% for label in label_fakta %}
+                    <span class="fakta-tag">{{ label }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Tidak ada kriteria minat atau kelayakan akademik yang terpenuhi.</p>
+                {% endif %}
+            </div>
+
+            <!-- Grades Box -->
+            <div class="summary-box">
+                <h3>📚 Nilai Rapor Anda</h3>
+                <div class="nilai-list">
+                    <div class="nilai-item">
+                        <span class="nilai-subject">Matematika</span>
+                        <span class="nilai-score {% if 'N01' in fakta_user %}met{% else %}unmet{% endif %}">
+                            {{ nilai_rapor.matematika }}
+                        </span>
+                    </div>
+                    <div class="nilai-item">
+                        <span class="nilai-subject">Bahasa Inggris</span>
+                        <span class="nilai-score {% if 'N02' in fakta_user %}met{% else %}unmet{% endif %}">
+                            {{ nilai_rapor.binggris }}
+                        </span>
+                    </div>
+                    <div class="nilai-item">
+                        <span class="nilai-subject">Ekonomi / IPS</span>
+                        <span class="nilai-score {% if 'N03' in fakta_user %}met{% else %}unmet{% endif %}">
+                            {{ nilai_rapor.ekonomi }}
+                        </span>
+                    </div>
+                    <div class="nilai-item">
+                        <span class="nilai-subject">Seni Budaya</span>
+                        <span class="nilai-score {% if 'N04' in fakta_user %}met{% else %}unmet{% endif %}">
+                            {{ nilai_rapor.seni }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REKOMENDASI LIST -->
+        {% if rekomendasi %}
+            <div class="section-label">🎯 Jurusan UTB yang Direkomendasikan</div>
+            <div class="jurusan-list">
+                {% for r in rekomendasi %}
+                <div class="jurusan-card {% if loop.index == 1 %}top-pick{% endif %}">
+                    <div class="card-header">
+                        <div>
+                            <div class="rank-badge rank-{{ loop.index if loop.index <= 3 else 'other' }}">
+                                {% if loop.index == 1 %}🥇 Pilihan Utama
+                                {% elif loop.index == 2 %}🥈 Pilihan Kedua
+                                {% elif loop.index == 3 %}🥉 Pilihan Ketiga
+                                {% else %}Rekomendasi #{{ loop.index }}
+                                {% endif %}
+                            </div>
+                            <h2 class="jurusan-name">{{ r.jurusan }}</h2>
+                            <div class="jurusan-kode">Kode Program Studi: {{ r.kode }}</div>
+                        </div>
+                        <div class="skor-box">
+                            <div class="skor-val">{{ r.skor|int }}%</div>
+                            <div class="skor-label">Kesesuaian</div>
+                        </div>
+                    </div>
+
+                    <!-- Alasan Sistem (Penjelasan Pakar) -->
+                    <div class="alasan-box">
+                        <div class="alasan-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Alasan Sistem (Penjelasan Pakar)
+                        </div>
+                        <div class="alasan-text">
+                            "{{ r.alasan }}"
+                        </div>
+                    </div>
+
+                    <p class="deskripsi">{{ r.deskripsi }}</p>
+
+                    <div class="prospek-box">
+                        <div class="prospek-title">💼 Prospek Karir</div>
+                        <div class="prospek-text">{{ r.prospek }}</div>
+                    </div>
+
+                    <!-- Logical Proof Trace -->
+                    {% if r.kondisi_terpenuhi %}
+                    <div class="trace-box">
+                        <span class="trace-label">Metode Inferensi:</span>
+                        {% for k in r.kondisi_terpenuhi %}
+                            <span class="trace-item">{{ k }}</span>
+                            {% if not loop.last %}<span class="trace-arrow">⋀</span>{% endif %}
+                        {% endfor %}
+                        <span class="trace-arrow">→</span>
+                        <span class="trace-item proven">{{ r.kode }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="actions-row">
+                <a href="/reset" class="btn-action btn-action-secondary">↺ Konsultasi Ulang</a>
+                <a href="https://www.utb-univ.ac.id/" target="_blank" class="btn-action btn-action-primary">
+                    Daftar ke UTB
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+                </a>
+            </div>
+
+        {% else %}
+            <!-- FALLBACK DENGAN LOGO KOTAK DI TENGAH -->
+            <div class="no-result-card">
+                <div class="fallback-logo-wrapper">
+                    <img src="{{ url_for('static', filename='images/logo-kotak.png') }}" alt="Logo UTB Kotak" class="fallback-logo-img">
+                </div>
+                <div class="icon">⚠️</div>
+                <h2>Belum Ada Jurusan yang Cocok</h2>
+                <p>Maaf, kombinasi minat dan nilai kamu belum mengerucut ke jurusan tertentu di UTB. Coba sesuaikan kembali jawabanmu atau tingkatkan nilai mata pelajaran pendukung.</p>
+                <div class="actions-row">
+                    <a href="/reset" class="btn-action btn-action-primary">↺ Sesuaikan Jawaban</a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Hasil ini bersifat <strong>rekomendasi akademik</strong> berdasarkan logika aturan basis pengetahuan UTB.</p>
+        </footer>
+    </div>
+</body>
+</html>

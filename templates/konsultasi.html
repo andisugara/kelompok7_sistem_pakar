@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Konsultasi - Sistem Pakar UTB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --primary-blue: #2563eb;
+            --primary-green: #10b981;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-glow: rgba(16, 185, 129, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Ambient glows */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10%;
+            right: -10%;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -10%;
+            left: -10%;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+            width: 100%;
+        }
+
+        /* NAVBAR */
+        nav {
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-long-img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .btn-back {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            color: var(--primary-blue);
+        }
+
+        /* STEPPER INDICATOR */
+        .stepper-container {
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .stepper-progress-track {
+            width: 100%;
+            max-width: 400px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stepper-progress-fill {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
+            transition: width 0.3s ease;
+        }
+
+        .stepper-nodes {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .step-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            text-align: center;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .step-node.active {
+            opacity: 1;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            color: var(--text-muted);
+        }
+
+        .step-node.active .step-circle {
+            border-color: var(--primary-green);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-green);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .step-node.current .step-circle {
+            border-color: var(--primary-blue);
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--text-light);
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.25);
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .step-node.active .step-label {
+            color: var(--text-light);
+        }
+
+        /* FORM */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.4s ease both;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.75rem;
+        }
+
+        .section-title .icon {
+            font-size: 1.4rem;
+        }
+
+        .section-title span.title-text {
+            background: linear-gradient(to right, #ffffff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* STEP CARDS GRID */
+        .cards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Custom card checkboxes */
+        .selectable-card {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .selectable-card:hover {
+            border-color: rgba(37, 99, 235, 0.3);
+            background: rgba(37, 99, 235, 0.02);
+            transform: translateY(-2px);
+        }
+
+        .selectable-card.checked {
+            border-color: var(--primary-green);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08);
+        }
+
+        /* Hide default checkbox */
+        .selectable-card input[type="checkbox"] {
+            display: none;
+        }
+
+        .custom-checkbox-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+            flex-shrink: 0;
+        }
+
+        .selectable-card.checked .custom-checkbox-indicator {
+            background: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        .custom-checkbox-indicator svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--bg-color);
+            stroke-width: 3px;
+            transform: scale(0);
+            transition: transform 0.2s ease;
+        }
+
+        .selectable-card.checked .custom-checkbox-indicator svg {
+            transform: scale(1);
+        }
+
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .card-code {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .selectable-card.checked .card-code {
+            color: var(--primary-green);
+        }
+
+        .card-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-light);
+        }
+
+        /* NAVIGATION BUTTONS */
+        .navigation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            gap: 1.5rem;
+        }
+
+        .btn-nav {
+            border-radius: 50px;
+            padding: 1.1rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            outline: none;
+        }
+
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-prev:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-next {
+            background: var(--primary-blue);
+            color: var(--text-light);
+            border: none;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+            margin-left: auto;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
+            filter: brightness(1.1);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: var(--text-light);
+            border: none;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-nav svg {
+            transition: transform 0.3s;
+        }
+
+        .btn-next:hover svg {
+            transform: translateX(4px);
+        }
+
+        .btn-prev:hover svg {
+            transform: translateX(-4px);
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .form-section {
+                padding: 1.5rem;
+            }
+            .navigation-row {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+            .btn-nav {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- NAVBAR -->
+        <nav>
+            <a href="/" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="Logo UTB" class="logo-long-img">
+            </a>
+            <a href="/" class="btn-back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+                Kembali ke Beranda
+            </a>
+        </nav>
+
+        <!-- STEPPER INDICATOR -->
+        <div class="stepper-container">
+            <div class="stepper-progress-track">
+                <div class="stepper-progress-fill" id="stepper-progress-fill"></div>
+            </div>
+            <div class="stepper-nodes">
+                <div class="step-node active current" id="node-1">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Kelayakan Akademik</span>
+                </div>
+                <div class="step-node" id="node-2">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Minat &amp; Bakat</span>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" action="/konsultasi">
+            <!-- STEP 1: KELAYAKAN AKADEMIK -->
+            <div class="form-section" id="step-1">
+                <h2 class="section-title">
+                    <span class="icon">📚</span>
+                    <span class="title-text">Langkah 1: Kelayakan Nilai Rapor SMA</span>
+                </h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                    Pilih mata pelajaran di bawah ini jika nilai rapor Anda memenuhi syarat batas kelayakan akademis <strong>yaitu lebih besar dari atau sama dengan 80 (≥ 80)</strong>.
+                </p>
+                
+                <div class="cards-list">
+                    {% for code, text in pertanyaan_mapel.items() %}
+                    <label class="selectable-card" id="card-{{ code }}">
+                        <input type="checkbox" id="check-{{ code }}" name="{{ code }}" value="{{ code }}">
+                        <div class="custom-checkbox-indicator">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="card-details">
+                            <span class="card-code">{{ code }}</span>
+                            <span class="card-text">Nilai Rapor <strong>{{ text }}</strong> saya lebih besar dari atau sama dengan 80 (≥ 80)</span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <div class="navigation-row">
+                    <button type="button" class="btn-nav btn-next" onclick="goToStep(2)">
+                        Langkah Berikutnya
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: MINAT & BAKAT -->
+            <div class="form-section" id="step-2" style="display: none;">
+                <h2 class="section-title">
+                    <span class="icon">🎯</span>
+                    <span class="title-text">Langkah 2: Kriteria Minat &amp; Bakat</span>
+                </h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                    Centang minat, kecenderungan karir, atau bakat yang sesuai dengan kepribadian Anda di bawah ini.
+                </p>
+
+                <div class="cards-list">
+                    {% for code, text in pertanyaan_minat.items() %}
+                    <label class="selectable-card" id="card-{{ code }}">
+                        <input type="checkbox" id="check-{{ code }}" name="{{ code }}" value="{{ code }}">
+                        <div class="custom-checkbox-indicator">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="card-details">
+                            <span class="card-code">{{ code }}</span>
+                            <span class="card-text">{{ text }}</span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <div class="navigation-row">
+                    <button type="button" class="btn-nav btn-prev" onclick="goToStep(1)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+                        Langkah Sebelumnya
+                    </button>
+                    <button type="submit" class="btn-nav btn-submit">
+                        Temukan Jurusanku
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const step1Div = document.getElementById('step-1');
+        const step2Div = document.getElementById('step-2');
+        const node1 = document.getElementById('node-1');
+        const node2 = document.getElementById('node-2');
+        const progressFill = document.getElementById('stepper-progress-fill');
+
+        function goToStep(step) {
+            if (step === 1) {
+                step1Div.style.display = 'block';
+                step2Div.style.display = 'none';
+                node1.classList.add('current');
+                node2.classList.remove('active', 'current');
+                progressFill.style.width = '50%';
+                currentStep = 1;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (step === 2) {
+                step1Div.style.display = 'none';
+                step2Div.style.display = 'block';
+                node1.classList.remove('current');
+                node1.classList.add('active');
+                node2.classList.add('active', 'current');
+                progressFill.style.width = '100%';
+                currentStep = 2;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Card checkbox class toggler
+        function handleCheckChange(code) {
+            const check = document.getElementById('check-' + code);
+            const card = document.getElementById('card-' + code);
+            
+            if (check.checked) {
+                card.classList.add('checked');
+            } else {
+                card.classList.remove('checked');
+            }
+        }
+        
+        // Add event listeners on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mapel keys (N01 - N04)
+            {% for code in pertanyaan_mapel.keys() %}
+            document.getElementById('check-{{ code }}').addEventListener('change', () => {
+                handleCheckChange('{{ code }}');
+            });
+            {% endfor %}
+
+            // Minat keys (K01 - K06)
+            {% for code in pertanyaan_minat.keys() %}
+            document.getElementById('check-{{ code }}').addEventListener('change', () => {
+                handleCheckChange('{{ code }}');
+            });
+            {% endfor %}
+        });
+    </script>
+</body>
+</html>
