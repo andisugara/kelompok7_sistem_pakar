@@ -1,0 +1,277 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hasil Diagnosis Mawar</h1>
+            <p class="text-slate-500 mt-1">Laporan diagnosis berdasarkan analisis Forward Chaining &amp; Certainty Factor.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{{ url_for('diagnose') }}" class="inline-flex items-center px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-lg text-sm transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9"></path>
+                </svg>
+                Ulangi Diagnosis
+            </a>
+        </div>
+    </div>
+
+    {% if not results %}
+    <div class="bg-white rounded-2xl border border-slate-100 p-10 text-center shadow-sm">
+        <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="text-xl font-bold text-slate-800">Tidak Ada Penyakit Terdeteksi</h3>
+        <p class="text-slate-500 mt-2 max-w-md mx-auto">Sistem tidak menemukan kecocokan aturan untuk gejala yang Anda masukkan. Pastikan Anda mengamati gejala dengan teliti.</p>
+        <a href="{{ url_for('diagnose') }}" class="mt-6 inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-md">
+            Kembali ke Form Diagnosis
+        </a>
+    </div>
+    {% else %}
+    
+    <!-- main result grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Primary Diagnosis Detail (Left 2 columns on desktop) -->
+        <div class="lg:col-span-2 space-y-8">
+            {% set primary = results[0] %}
+            <!-- Primary Diagnosis Card -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="p-6 sm:p-8 bg-gradient-to-br from-emerald-600 to-botanical-800 text-white relative">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white mb-3 tracking-widest uppercase">
+                        Diagnosis Utama
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mb-4">{{ primary.name }}</h2>
+                    <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
+                        {{ primary.description }}
+                    </p>
+
+                    <!-- Confidence gauge/bar -->
+                    <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-emerald-200 uppercase tracking-wider">Tingkat Keyakinan (Certainty Factor)</span>
+                                <span class="text-2xl font-black text-white">{{ primary.percentage }}%</span>
+                            </div>
+                            <div class="w-full bg-emerald-950/30 rounded-full h-3">
+                                <div class="bg-roseaccent-400 h-3 rounded-full transition-all duration-1000" style="width: {{ primary.percentage }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treatment Section -->
+                <div class="p-6 sm:p-8 space-y-6">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-roseaccent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                        </svg>
+                        Rekomendasi Penanganan
+                    </h3>
+
+                    <!-- Immediate Actions -->
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-roseaccent-600 mr-2"></span>
+                            Tindakan Langsung (Kuratif)
+                        </h4>
+                        <ul class="space-y-2.5">
+                            {% for item in primary.treatment.immediate %}
+                            <li class="flex items-start text-sm text-slate-600 leading-relaxed">
+                                <svg class="w-4 h-4 text-roseaccent-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{{ item }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Prevention -->
+                    <div class="pt-4 border-t border-slate-100">
+                        <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-emerald-600 mr-2"></span>
+                            Pencegahan Jangka Panjang (Preventif)
+                        </h4>
+                        <ul class="space-y-2.5">
+                            {% for item in primary.treatment.prevention %}
+                            <li class="flex items-start text-sm text-slate-600 leading-relaxed">
+                                <svg class="w-4 h-4 text-emerald-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{{ item }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expert System Inference Explanation Section -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8 space-y-6">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Sistem Penjelasan (Explanation System)</h3>
+                    <p class="text-xs text-slate-500 mt-1">Transparansi pengambilan keputusan mesin inferensi sistem pakar.</p>
+                </div>
+
+                <!-- Forward Chaining Logs -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center">
+                        <svg class="w-4 h-4 mr-1.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                        </svg>
+                        1. Tahap Forward Chaining (Penyaringan Aturan)
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Sistem mencari aturan (*rules*) yang premis gejalanya cocok dengan gejala teramati. Aturan yang terpicu akan dilanjutkan ke perhitungan tingkat kepastian.
+                    </p>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3 font-mono text-xs text-slate-700">
+                        {% for item in rule_triggers %}
+                        <div class="pb-2 {% if not loop.last %}border-b border-slate-200/60{% endif %}">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-emerald-700">{{ item.disease_name }}</span>
+                                <span class="text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-bold">Terpicu</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500"><span class="font-semibold text-slate-700">Rule:</span> {{ item.rule }}</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5"><span class="font-semibold text-slate-700">Fakta Terpenuhi:</span> {{ item.triggered_by }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Certainty Factor Math Logs -->
+                <div class="space-y-3 pt-4 border-t border-slate-100">
+                    <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center">
+                        <svg class="w-4 h-4 mr-1.5 text-roseaccent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        2. Tahap Perhitungan Certainty Factor (Kalkulasi Matematis)
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Menghitung CF gejala terpilih: $CF_{symptom} = CF_{user} \times CF_{expert}$. Lalu menggabungkan nilai-nilai CF tersebut dengan formula kombinasi:
+                        $$CF_{combine}(CF_{old}, CF_{new}) = CF_{old} + CF_{new} \times (1 - CF_{old})$$
+                    </p>
+
+                    <!-- Steps for each candidate -->
+                    <div class="space-y-4">
+                        {% for p_code, data in inference_steps.items() %}
+                        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-800">{{ diseases[p_code].name }} ({{ p_code }})</span>
+                                <span class="text-xs font-mono font-bold text-roseaccent-700 bg-roseaccent-50 px-2 py-0.5 rounded">
+                                    CF Akhir: {{ data.final_cf }}
+                                </span>
+                            </div>
+                            
+                            <!-- Step 1 table -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left font-mono text-[10px] text-slate-600 mb-3 border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-200 text-slate-800">
+                                            <th class="py-1">Gejala Cocok</th>
+                                            <th class="py-1 text-center">CF User</th>
+                                            <th class="py-1 text-center">CF Pakar</th>
+                                            <th class="py-1 text-right">CF Gejala</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for s in data.steps %}
+                                        <tr class="border-b border-slate-100">
+                                            <td class="py-1.5 truncate max-w-xs">{{ s.symptom }}</td>
+                                            <td class="py-1.5 text-center">{{ s.cf_user }}</td>
+                                            <td class="py-1.5 text-center">{{ s.cf_expert }}</td>
+                                            <td class="py-1.5 text-right font-semibold text-slate-800">{{ s.cf_calc }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Combination logs -->
+                            <div class="bg-slate-800 text-slate-300 font-mono text-[10px] p-2.5 rounded-lg space-y-1 overflow-x-auto">
+                                <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider border-b border-slate-700 pb-1 mb-1">
+                                    Kombinasi CF Gabungan:
+                                </div>
+                                {% for step_line in data.combination_log %}
+                                <div>{{ step_line }}</div>
+                                {% endfor %}
+                                <div class="text-white font-bold pt-1 border-t border-slate-700 mt-1">
+                                    CF Total = {{ data.final_cf }} ({{ (data.final_cf * 100) | round(2) }}%)
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sidebar Panel (Right column on desktop) -->
+        <div class="space-y-8">
+            <!-- Selected Symptoms Summary Card -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h3 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    Gejala Terpilih ({{ selected_symptoms|length }})
+                </h3>
+                <div class="space-y-3">
+                    {% for g_code, cf_val in selected_symptoms.items() %}
+                    <div class="p-3 bg-slate-50/70 border border-slate-100 rounded-xl flex items-start justify-between gap-3">
+                        <div class="text-xs">
+                            <span class="font-bold text-slate-400 block mb-0.5">{{ g_code }}</span>
+                            <span class="text-slate-700 font-semibold leading-relaxed">{{ symptoms_dict[g_code] }}</span>
+                        </div>
+                        <div class="flex-shrink-0">
+                            {% if cf_val >= 0.8 %}
+                            <span class="text-[10px] bg-roseaccent-50 text-roseaccent-800 font-bold px-2 py-1 rounded-md border border-roseaccent-100">CF {{ cf_val }}</span>
+                            {% elif cf_val >= 0.5 %}
+                            <span class="text-[10px] bg-orange-50 text-orange-800 font-bold px-2 py-1 rounded-md border border-orange-100">CF {{ cf_val }}</span>
+                            {% else %}
+                            <span class="text-[10px] bg-amber-50 text-amber-800 font-bold px-2 py-1 rounded-md border border-amber-100">CF {{ cf_val }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Alternative Possibilities Card -->
+            {% if results|length > 1 %}
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h3 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    Kemungkinan Lainnya
+                </h3>
+                <div class="space-y-4">
+                    {% for item in results[1:] %}
+                    <div class="relative pb-2 {% if not loop.last %}border-b border-slate-100{% endif %}">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-bold text-slate-800 hover:text-emerald-700 transition cursor-pointer" onclick="document.getElementById('explain-box').scrollIntoView({behavior: 'smooth'})">
+                                {{ item.name }}
+                            </span>
+                            <span class="text-sm font-extrabold text-emerald-600">{{ item.percentage }}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5">
+                            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: {{ item.percentage }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}

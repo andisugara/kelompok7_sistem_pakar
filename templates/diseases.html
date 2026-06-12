@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header -->
+    <div class="mb-10 text-center md:text-left">
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Kamus Penyakit &amp; Hama Mawar</h1>
+        <p class="text-slate-500 mt-2">Daftar lengkap 10 jenis penyakit dan hama mawar beserta deskripsi, gejala, dan solusi penanganannya.</p>
+    </div>
+
+    <!-- Quick navigation bar -->
+    <div class="mb-12 bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex flex-wrap gap-2 justify-center">
+        {% for code, info in diseases.items() %}
+        <a href="#{{ code }}" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-50 border border-slate-200 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200 transition">
+            {{ code }}: {{ info.name.split(' (')[0] }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Disease Cards List -->
+    <div class="space-y-12">
+        {% for code, info in diseases.items() %}
+        <div id="{{ code }}" class="scroll-mt-24 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+            <!-- Header Banner -->
+            <div class="bg-gradient-to-r from-botanical-900 to-botanical-950 px-6 sm:px-8 py-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold text-emerald-400 tracking-widest uppercase block mb-1">Penyakit {{ code }}</span>
+                    <h2 class="text-xl sm:text-2xl font-bold">{{ info.name }}</h2>
+                </div>
+                <div>
+                    <a href="{{ url_for('diagnose') }}" class="inline-flex items-center px-4 py-2 bg-roseaccent-600 hover:bg-roseaccent-700 text-white text-xs font-bold rounded-lg transition">
+                        Diagnosis Gejala Ini
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Description -->
+                <div class="lg:col-span-1 space-y-4">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2">Deskripsi</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        {{ info.description }}
+                    </p>
+                    
+                    <div class="pt-4">
+                        <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">Gejala Terkait</h4>
+                        <div class="space-y-2">
+                            {% for sym_code in info.symptoms %}
+                            <div class="flex items-start text-xs text-slate-700">
+                                <span class="bg-emerald-50 text-emerald-800 font-bold px-1.5 py-0.5 rounded mr-2 flex-shrink-0">{{ sym_code }}</span>
+                                <span class="leading-relaxed font-semibold">{{ symptoms_dict[sym_code] }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treatment and Prevention (2 columns on desktop) -->
+                <div class="lg:col-span-2 space-y-6 lg:border-l lg:border-slate-100 lg:pl-8">
+                    <!-- Curative -->
+                    <div>
+                        <h3 class="text-sm font-bold text-roseaccent-700 uppercase tracking-wider mb-3 flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                            </svg>
+                            Tindakan Pengobatan Langsung
+                        </h3>
+                        <ul class="space-y-2.5">
+                            {% for step in info.treatment.immediate %}
+                            <li class="flex items-start text-sm text-slate-600 leading-relaxed">
+                                <svg class="w-4 h-4 text-roseaccent-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                                </svg>
+                                <span>{{ step }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Preventive -->
+                    <div class="pt-6 border-t border-slate-100">
+                        <h3 class="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-3 flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Pencegahan Jangka Panjang
+                        </h3>
+                        <ul class="space-y-2.5">
+                            {% for step in info.treatment.prevention %}
+                            <li class="flex items-start text-sm text-slate-600 leading-relaxed">
+                                <svg class="w-4 h-4 text-emerald-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                                </svg>
+                                <span>{{ step }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

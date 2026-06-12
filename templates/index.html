@@ -1,0 +1,122 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<!-- Hero Section with Deep Dark Botanical Green to Black Gradient -->
+<section class="relative bg-gradient-to-br from-botanical-950 via-slate-900 to-black text-white py-16 px-4 overflow-hidden border-b border-botanical-900">
+    <!-- Subtle decorative lights/shapes -->
+    <div class="absolute top-0 right-0 w-80 h-80 bg-roseaccent-900/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-botanical-500/10 rounded-full blur-3xl -ml-20 -mb-20"></div>
+
+    <div class="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+        <!-- Logo Kotak (atas logo bawah tulisan - di dalam file logo-kotak.png) -->
+        <div class="mb-6 animate-pulse">
+            <img src="{{ url_for('static', filename='images/logo-kotak.png') }}" alt="RoseCare Logo Kotak" class="h-44 w-auto object-contain drop-shadow-[0_4px_20px_rgba(244,63,94,0.15)]">
+        </div>
+        
+        <!-- Tagline / Subtitle -->
+        <p class="text-lg md:text-xl text-emerald-400 font-semibold mb-3 tracking-wide">
+            Sistem Pakar Diagnosis Hama &amp; Penyakit Tanaman Mawar
+        </p>
+        <h1 class="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+            Rawat Mawar Anda dengan <span class="text-roseaccent-400">Presisi &amp; Keyakinan</span>
+        </h1>
+        <p class="text-slate-300 max-w-2xl mx-auto mb-10 text-sm md:text-base leading-relaxed">
+            RoseCare menggabungkan metode <strong class="text-white">Forward Chaining</strong> untuk penyaringan logis gejala dan <strong class="text-white">Certainty Factor (Faktor Kepastian)</strong> untuk menghitung persentase tingkat keyakinan diagnosis hama/penyakit secara akurat.
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto">
+            <a href="{{ url_for('diagnose') }}" class="w-full sm:w-auto inline-flex justify-center items-center px-8 py-4 bg-roseaccent-600 hover:bg-roseaccent-700 text-white font-bold rounded-xl shadow-lg hover:shadow-roseaccent-500/20 transform hover:-translate-y-0.5 transition duration-200 text-base">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                Mulai Diagnosis Sekarang
+            </a>
+            <a href="{{ url_for('diseases') }}" class="w-full sm:w-auto inline-flex justify-center items-center px-8 py-4 bg-transparent border-2 border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-bold rounded-xl transition duration-200 text-base">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                Lihat Kamus Penyakit
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Method Cards Section -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Metode Sistem Pakar Kami</h2>
+        <p class="text-slate-500 mt-2">Dua metode ilmiah yang saling melengkapi untuk menghasilkan diagnosis berkualitas tinggi</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Forward Chaining -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
+            <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Forward Chaining (Pelacakan ke Depan)</h3>
+            <p class="text-slate-600 leading-relaxed flex-grow text-sm md:text-base">
+                Menyaring berbagai data gejala yang Anda masukkan untuk memicu aturan (*rules*) diagnosis penyakit. Sistem melacak dari premis gejala yang ada untuk menyimpulkan hama atau penyakit apa saja yang mungkin terjadi pada mawar Anda.
+            </p>
+            <div class="mt-6 p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
+                <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Contoh Alur:</span>
+                <p class="text-xs text-emerald-700 mt-1">
+                    Daun bolong-bolong (G15) + Kelopak bunga tergigit (G16) + Terlihat ulat (G17) &rarr; Sistem menyimpulkan tanaman terserang **Hama Ulat**.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Certainty Factor -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
+            <div class="h-12 w-12 bg-roseaccent-50 text-roseaccent-600 rounded-xl flex items-center justify-center mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Certainty Factor (Faktor Kepastian)</h3>
+            <p class="text-slate-600 leading-relaxed flex-grow text-sm md:text-base">
+                Menangani aspek ketidakpastian dalam diagnosis. Anda dapat menentukan seberapa yakin Anda melihat gejala tersebut (tidak yakin s.d. sangat yakin). Sistem kemudian menghitung bobot gabungan gejala dengan aturan pakar untuk mencari keyakinan tertinggi.
+            </p>
+            <div class="mt-6 p-4 bg-roseaccent-50/50 rounded-xl border border-roseaccent-100">
+                <span class="text-xs font-bold text-roseaccent-800 uppercase tracking-wider">Skala Keyakinan Pengguna:</span>
+                <div class="flex gap-2 flex-wrap mt-2">
+                    <span class="text-[10px] bg-white border border-roseaccent-200 text-roseaccent-700 px-2 py-0.5 rounded-full font-medium">Yakin: 0.9</span>
+                    <span class="text-[10px] bg-white border border-roseaccent-200 text-roseaccent-700 px-2 py-0.5 rounded-full font-medium">Cukup Yakin: 0.7</span>
+                    <span class="text-[10px] bg-white border border-roseaccent-200 text-roseaccent-700 px-2 py-0.5 rounded-full font-medium">Sedikit Yakin: 0.4</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Supported Diseases Grid -->
+<section class="bg-white border-t border-slate-100 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <span class="text-sm font-bold text-roseaccent-600 uppercase tracking-widest">Kapasitas Sistem</span>
+            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">10 Hama &amp; Penyakit Utama Mawar</h2>
+            <p class="text-slate-500 mt-2 max-w-2xl mx-auto">Sistem kami diprogram secara spesifik untuk mengenali dan menganalisis 10 jenis gangguan kesehatan utama pada tanaman mawar</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {% for code, info in diseases.items() %}
+            <div class="border border-slate-100 rounded-xl p-5 hover:border-emerald-200 hover:shadow-sm transition-all duration-200 bg-slate-50/50 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-bold text-slate-400 tracking-widest uppercase block mb-1">{{ code }}</span>
+                    <h4 class="font-bold text-slate-800 leading-snug mb-2">{{ info.name }}</h4>
+                </div>
+                <a href="{{ url_for('diseases') }}#{{ code }}" class="text-xs text-emerald-600 hover:text-emerald-700 font-bold inline-flex items-center mt-4">
+                    Lihat Detail
+                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Breadcrumb & Header -->
+    <div class="mb-8 text-center md:text-left">
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Diagnosis Gejala Mawar</h1>
+        <p class="text-slate-500 mt-2">Pilih gejala yang Anda amati pada tanaman mawar Anda beserta tingkat keyakinannya.</p>
+    </div>
+
+    {% if error %}
+    <div class="mb-8 p-4 bg-roseaccent-50 border-l-4 border-roseaccent-600 rounded-r-xl text-roseaccent-900 flex items-start space-x-3 shadow-sm">
+        <svg class="w-5 h-5 mt-0.5 text-roseaccent-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('diagnose') }}" method="POST" class="space-y-10">
+        
+        {% for cat_name, g_list in categories.items() %}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <!-- Category Header -->
+            <div class="bg-gradient-to-r from-botanical-800 to-botanical-900 px-6 py-4 border-b border-botanical-700">
+                <h2 class="text-lg font-bold text-white tracking-wide">{{ cat_name }}</h2>
+            </div>
+            
+            <!-- Symptoms Checklist -->
+            <div class="p-6 divide-y divide-slate-100">
+                {% for g_code in g_list %}
+                <div class="py-5 {% if loop.first %}pt-0{% endif %} {% if loop.last %}pb-0{% endif %} flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <!-- Symptom Details -->
+                    <div class="md:max-w-md">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 mb-1">
+                            {{ g_code }}
+                        </span>
+                        <p class="text-base font-semibold text-slate-800 leading-snug">
+                            {{ symptoms[g_code] }}
+                        </p>
+                    </div>
+
+                    <!-- Certainty Factor Selection (Radio cards) -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto">
+                        <!-- Tidak Tahu / Tidak Ada (0.0) -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="{{ g_code }}" value="0.0" checked class="sr-only peer">
+                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-slate-100 peer-checked:border-slate-400 peer-checked:text-slate-800 hover:bg-slate-50 transition-all">
+                                Tidak Ada (0)
+                            </div>
+                        </label>
+
+                        <!-- Sedikit Yakin (0.4) -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="{{ g_code }}" value="0.4" class="sr-only peer">
+                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-amber-50 peer-checked:border-amber-400 peer-checked:text-amber-800 hover:bg-slate-50 transition-all">
+                                Sedikit Yakin (0.4)
+                            </div>
+                        </label>
+
+                        <!-- Cukup Yakin (0.7) -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="{{ g_code }}" value="0.7" class="sr-only peer">
+                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-orange-50 peer-checked:border-orange-400 peer-checked:text-orange-800 hover:bg-slate-50 transition-all">
+                                Cukup Yakin (0.7)
+                            </div>
+                        </label>
+
+                        <!-- Yakin / Sangat Yakin (0.9) -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="{{ g_code }}" value="0.9" class="sr-only peer">
+                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-roseaccent-50 peer-checked:border-roseaccent-400 peer-checked:text-roseaccent-800 hover:bg-slate-50 transition-all">
+                                Yakin (0.9)
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Form Actions -->
+        <div class="flex flex-col sm:flex-row justify-end items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+            <button type="reset" class="w-full sm:w-auto px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold rounded-xl transition duration-200">
+                Bersihkan Pilihan
+            </button>
+            <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md hover:shadow-emerald-500/10 transform hover:-translate-y-0.5 transition duration-200">
+                Analisis Gejala &rarr;
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
