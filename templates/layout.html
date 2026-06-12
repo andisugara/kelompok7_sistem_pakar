@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <!-- Google Fonts: Outfit for modern look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -52,6 +54,7 @@
         body {
             font-family: 'Outfit', sans-serif;
         }
+
         .bg-pattern {
             background-color: #f8fafc;
             background-image: radial-gradient(#22c55e10 1px, transparent 1px), radial-gradient(#ec489910 1px, transparent 1px);
@@ -60,33 +63,44 @@
         }
     </style>
 </head>
+
 <body class="bg-pattern min-h-screen flex flex-col text-slate-800">
 
     <!-- Header / Navbar: Deep dark botanical green so the white logo-panjang is visible -->
     <header class="bg-botanical-950 text-white shadow-lg sticky top-0 z-50 border-b border-botanical-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                
+
                 <!-- Logo Horizontal (kiri logo kanan tulisan - di dalam file logo-panjang.png) -->
                 <div class="flex items-center">
                     <a href="{{ url_for('index') }}" class="flex items-center">
-                        <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="RoseCare Logo" class="h-12 w-auto object-contain hover:opacity-90 transition-opacity">
+                        <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="RoseCare Logo"
+                            class="h-12 w-auto object-contain hover:opacity-90 transition-opacity">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <nav class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide">
-                    <a href="{{ url_for('index') }}" class="hover:text-roseaccent-300 px-3 py-2 rounded-md transition duration-250">Beranda</a>
-                    <a href="{{ url_for('diagnose') }}" class="hover:text-roseaccent-300 px-3 py-2 rounded-md transition duration-250">Mulai Diagnosis</a>
-                    <a href="{{ url_for('diseases') }}" class="hover:text-roseaccent-300 px-3 py-2 rounded-md transition duration-250">Kamus Penyakit</a>
+                    <a href="{{ url_for('index') }}"
+                        class="hover:text-roseaccent-300 px-3 py-2 rounded-md transition duration-250">Beranda</a>
+                    <a href="{{ url_for('diagnose') }}"
+                        class="hover:text-roseaccent-300 px-3 py-2 rounded-md transition duration-250">Mulai
+                        Diagnosis</a>
+                    <a href="{{ url_for('diseases') }}"
+                        class="hover:text-roseaccent-300 px-3 py-2 rounded-md transition duration-250">Kamus
+                        Penyakit</a>
                 </nav>
 
                 <!-- Mobile Menu Button -->
                 <div class="flex md:hidden">
-                    <button type="button" id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-emerald-400 hover:text-white hover:bg-botanical-900 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+                    <button type="button" id="mobile-menu-btn"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-emerald-400 hover:text-white hover:bg-botanical-900 focus:outline-none"
+                        aria-controls="mobile-menu" aria-expanded="false">
                         <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
                 </div>
@@ -96,9 +110,12 @@
         <!-- Mobile Navigation Menu -->
         <div class="hidden md:hidden bg-botanical-900 border-t border-botanical-800" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-base font-semibold">
-                <a href="{{ url_for('index') }}" class="text-white block px-3 py-2 rounded-md hover:bg-botanical-800">Beranda</a>
-                <a href="{{ url_for('diagnose') }}" class="text-white block px-3 py-2 rounded-md hover:bg-botanical-800">Mulai Diagnosis</a>
-                <a href="{{ url_for('diseases') }}" class="text-white block px-3 py-2 rounded-md hover:bg-botanical-800">Kamus Penyakit</a>
+                <a href="{{ url_for('index') }}"
+                    class="text-white block px-3 py-2 rounded-md hover:bg-botanical-800">Beranda</a>
+                <a href="{{ url_for('diagnose') }}"
+                    class="text-white block px-3 py-2 rounded-md hover:bg-botanical-800">Mulai Diagnosis</a>
+                <a href="{{ url_for('diseases') }}"
+                    class="text-white block px-3 py-2 rounded-md hover:bg-botanical-800">Kamus Penyakit</a>
             </div>
         </div>
     </header>
@@ -113,10 +130,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                 <div class="flex items-center">
-                    <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="RoseCare Logo" class="h-8 w-auto object-contain">
+                    <img src="{{ url_for('static', filename='images/logo-panjang.png') }}" alt="RoseCare Logo"
+                        class="h-8 w-auto object-contain">
                 </div>
                 <p class="text-xs">
-                    &copy; 2026 RoseCare. Semua hak cipta dilindungi. Sistem Pakar Diagnosis Hama & Penyakit Tanaman Mawar.
+                    &copy; 2026 RoseCare. Kelompok 7 - Sistem Pakar TIF RM 22B
                 </p>
                 <div class="flex space-x-6 text-sm">
                     <a href="{{ url_for('index') }}" class="hover:text-white transition">Beranda</a>
@@ -138,4 +156,5 @@
         }
     </script>
 </body>
+
 </html>
