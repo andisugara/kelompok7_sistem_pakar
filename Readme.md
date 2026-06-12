@@ -80,6 +80,7 @@ python app.py
 # 5. Buka browser dan akses
 http://localhost:5000
 
+```
 ---
 
 ## 👥 Anggota Kelompok
