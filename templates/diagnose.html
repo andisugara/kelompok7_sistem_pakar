@@ -1,78 +1,119 @@
 {% extends 'layout.html' %}
 
+{% block title %}Diagnosis Gejala — RoseCare{% endblock %}
+
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <!-- Breadcrumb & Header -->
-    <div class="mb-8 text-center md:text-left">
-        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Diagnosis Gejala Mawar</h1>
-        <p class="text-slate-500 mt-2">Pilih gejala yang Anda amati pada tanaman mawar Anda beserta tingkat keyakinannya.</p>
+<style>
+    /* Styling untuk Radio Button yang aktif */
+    input[type="radio"]:checked + div {
+        background-color: #c58a90 !important; /* Dusty Rose */
+        border-color: #c58a90 !important;
+        color: white !important;
+    }
+    /* Opsional: Efek hover pada pilihan */
+    label:hover div {
+        border-color: #c58a90 !important;
+    }
+</style>
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- Page Header -->
+    <div class="mb-10">
+        <span class="inline-block mb-2 text-xs font-bold tracking-widest uppercase"
+              style="color:#c58a90;">Sistem Pakar</span>
+        <h1 class="text-4xl font-black leading-tight mb-3" style="color:#2d3e35;">
+            Diagnosis Gejala Mawar
+        </h1>
+        <p class="text-base" style="color:#5a7a6a;">
+            Pilih gejala yang Anda amati pada tanaman mawar beserta tingkat keyakinan Anda terhadap gejala tersebut.
+        </p>
     </div>
 
+    <!-- Error Alert -->
     {% if error %}
-    <div class="mb-8 p-4 bg-roseaccent-50 border-l-4 border-roseaccent-600 rounded-r-xl text-roseaccent-900 flex items-start space-x-3 shadow-sm">
-        <svg class="w-5 h-5 mt-0.5 text-roseaccent-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+    <div class="mb-8 flex items-start gap-3 p-5 rounded-3xl border"
+         style="background:#fdf2f3; border-color:#f5eaeb;">
+        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+             style="color:#c58a90;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
-        <span>{{ error }}</span>
+        <p class="text-sm font-semibold" style="color:#9c636a;">{{ error }}</p>
     </div>
     {% endif %}
 
-    <form action="{{ url_for('diagnose') }}" method="POST" class="space-y-10">
-        
+    <form action="{{ url_for('diagnose') }}" method="POST" class="space-y-8">
+
         {% for cat_name, g_list in categories.items() %}
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <!-- Category Header -->
-            <div class="bg-gradient-to-r from-botanical-800 to-botanical-900 px-6 py-4 border-b border-botanical-700">
-                <h2 class="text-lg font-bold text-white tracking-wide">{{ cat_name }}</h2>
+        <div class="rounded-4xl overflow-hidden shadow-sm border" style="border-color:#ddeadf; background:#fff;">
+            <!-- Category header -->
+            <div class="px-6 py-5 border-b" style="background:#2d3e35; border-color:rgba(255,255,255,0.1);">
+                <h2 class="text-base font-bold text-white tracking-wide">{{ cat_name }}</h2>
             </div>
-            
-            <!-- Symptoms Checklist -->
-            <div class="p-6 divide-y divide-slate-100">
+
+            <!-- Symptoms -->
+            <div class="divide-y" style="divide-color:#f0f5f1;">
                 {% for g_code in g_list %}
-                <div class="py-5 {% if loop.first %}pt-0{% endif %} {% if loop.last %}pb-0{% endif %} flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <!-- Symptom Details -->
-                    <div class="md:max-w-md">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 mb-1">
-                            {{ g_code }}
-                        </span>
-                        <p class="text-base font-semibold text-slate-800 leading-snug">
+                <div class="px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-5
+                            {% if loop.first %}pt-6{% endif %} {% if loop.last %}pb-6{% endif %}">
+
+                    <!-- Symptom Info -->
+                    <div class="md:max-w-sm">
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase mb-1.5"
+                              style="background:#f0f5f1; color:#5a7a6a; border:1px solid #ddeadf;">{{ g_code }}</span>
+                        <p class="text-sm font-semibold leading-snug" style="color:#2d3e35;">
                             {{ symptoms[g_code] }}
                         </p>
                     </div>
 
-                    <!-- Certainty Factor Selection (Radio cards) -->
+                    <!-- CF Radio Cards -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto">
-                        <!-- Tidak Tahu / Tidak Ada (0.0) -->
+
+                        <!-- Tidak Ada (0.0) — default -->
                         <label class="cursor-pointer">
                             <input type="radio" name="{{ g_code }}" value="0.0" checked class="sr-only peer">
-                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-slate-100 peer-checked:border-slate-400 peer-checked:text-slate-800 hover:bg-slate-50 transition-all">
-                                Tidak Ada (0)
+                            <div class="px-3 py-2.5 text-center text-xs font-bold rounded-2xl border transition-all
+                                        peer-checked:text-white peer-checked:border-forest peer-checked:bg-forest
+                                        hover:border-forest/40"
+                                 style="border-color:#ddeadf; color:#5a7a6a; background:#f7faf7;">
+                                Tidak Ada<br><span class="font-black">(0)</span>
                             </div>
                         </label>
 
                         <!-- Sedikit Yakin (0.4) -->
                         <label class="cursor-pointer">
                             <input type="radio" name="{{ g_code }}" value="0.4" class="sr-only peer">
-                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-amber-50 peer-checked:border-amber-400 peer-checked:text-amber-800 hover:bg-slate-50 transition-all">
-                                Sedikit Yakin (0.4)
+                            <div class="px-3 py-2.5 text-center text-xs font-bold rounded-2xl border transition-all
+                                        peer-checked:text-white peer-checked:border-sage peer-checked:bg-sage
+                                        hover:border-sage/40"
+                                 style="border-color:#ddeadf; color:#5a7a6a; background:#f7faf7;">
+                                Sedikit<br><span class="font-black">(0.4)</span>
                             </div>
                         </label>
 
                         <!-- Cukup Yakin (0.7) -->
                         <label class="cursor-pointer">
                             <input type="radio" name="{{ g_code }}" value="0.7" class="sr-only peer">
-                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-orange-50 peer-checked:border-orange-400 peer-checked:text-orange-800 hover:bg-slate-50 transition-all">
-                                Cukup Yakin (0.7)
+                            <div class="px-3 py-2.5 text-center text-xs font-bold rounded-2xl border transition-all
+                                        peer-checked:text-white peer-checked:border-rose-mid peer-checked:bg-rose-mid
+                                        hover:border-rose-mid/40"
+                                 style="border-color:#ddeadf; color:#5a7a6a; background:#f7faf7;">
+                                Cukup<br><span class="font-black">(0.7)</span>
                             </div>
                         </label>
 
-                        <!-- Yakin / Sangat Yakin (0.9) -->
+                        <!-- Yakin (0.9) -->
                         <label class="cursor-pointer">
                             <input type="radio" name="{{ g_code }}" value="0.9" class="sr-only peer">
-                            <div class="px-3 py-2 text-center text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 bg-white peer-checked:bg-roseaccent-50 peer-checked:border-roseaccent-400 peer-checked:text-roseaccent-800 hover:bg-slate-50 transition-all">
-                                Yakin (0.9)
+                            <div class="px-3 py-2.5 text-center text-xs font-bold rounded-2xl border transition-all
+                                        peer-checked:text-white peer-checked:border-rose peer-checked:bg-rose
+                                        hover:border-rose/40"
+                                 style="border-color:#ddeadf; color:#5a7a6a; background:#f7faf7;">
+                                Yakin<br><span class="font-black">(0.9)</span>
                             </div>
                         </label>
+
                     </div>
                 </div>
                 {% endfor %}
@@ -81,12 +122,17 @@
         {% endfor %}
 
         <!-- Form Actions -->
-        <div class="flex flex-col sm:flex-row justify-end items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-            <button type="reset" class="w-full sm:w-auto px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold rounded-xl transition duration-200">
+        <div class="flex flex-col sm:flex-row justify-end items-center gap-4 p-6 rounded-4xl border shadow-sm"
+             style="background:#fff; border-color:#ddeadf;">
+            <button type="reset"
+                    class="w-full sm:w-auto px-6 py-3 rounded-2xl border font-bold text-sm transition-colors duration-200 hover:bg-offwhite"
+                    style="border-color:#ddeadf; color:#5a7a6a;">
                 Bersihkan Pilihan
             </button>
-            <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md hover:shadow-emerald-500/10 transform hover:-translate-y-0.5 transition duration-200">
-                Analisis Gejala &rarr;
+            <button type="submit"
+                    class="w-full sm:w-auto px-10 py-3.5 rounded-2xl font-bold text-sm text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5"
+                    style="background:#2d3e35; box-shadow:0 6px 20px rgba(45,62,53,0.25);">
+                Analisis Gejala →
             </button>
         </div>
     </form>

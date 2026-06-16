@@ -36,6 +36,7 @@ SYMPTOM_CATEGORIES = {
 DISEASES = {
     "P01": {
         "name": "Bercak Hitam (Black Spot)",
+        "image": "p01.jpg",
         "description": "Bercak Hitam (Black Spot) disebabkan oleh jamur Diplocarpon rosae. Penyakit ini sangat umum terjadi pada tanaman mawar terutama pada kondisi lembap dan hangat. Jika dibiarkan, daun akan menguning lalu rontok, yang melemahkan tanaman secara keseluruhan.",
         "symptoms": ["G01", "G02"],
         "treatment": {
@@ -53,6 +54,7 @@ DISEASES = {
     },
     "P02": {
         "name": "Embun Tepung (Powdery Mildew)",
+        "image": "p02.jpg",
         "description": "Embun Tepung (Powdery Mildew) disebabkan oleh jamur Podosphaera pannosa. Jamur ini menyukai kondisi hangat dan kering di siang hari serta lembap di malam hari. Gejalanya ditandai dengan munculnya lapisan putih berdebu pada daun, batang, dan kuncup.",
         "symptoms": ["G03"],
         "treatment": {
@@ -68,6 +70,7 @@ DISEASES = {
     },
     "P03": {
         "name": "Karat Daun (Rust)",
+        "image": "p03.jpg",
         "description": "Karat Daun disebabkan oleh jamur Phragmidium mucronatum. Penyakit ini memicu pembentukan pustul (bintik menonjol) berwarna jingga terang atau karat di bagian bawah daun, yang lama-kelamaan membuat daun gugur.",
         "symptoms": ["G04", "G02"],
         "treatment": {
@@ -83,6 +86,7 @@ DISEASES = {
     },
     "P04": {
         "name": "Busuk Batang (Stem Rot)",
+        "image": "p04.jpg",
         "description": "Busuk Batang disebabkan oleh infeksi jamur seperti Coniothyrium wernsdorffiae atau bakteri patogen. Penyakit ini sering masuk melalui luka bekas pemangkasan. Batang akan berubah menjadi cokelat kehitaman dan tanaman layu tiba-tiba.",
         "symptoms": ["G05", "G06"],
         "treatment": {
@@ -98,6 +102,7 @@ DISEASES = {
     },
     "P05": {
         "name": "Virus Mosaik (Mosaic Virus)",
+        "image": "p05.jpg",
         "description": "Virus Mosaik Mawar (Rose Mosaic Virus) ditularkan secara vegetatif melalui penyambungan (grafting) atau alat pemotongan yang tidak steril. Daun akan memperlihatkan pola belang hijau muda dan hijau tua yang khas seperti mosaik dan menurunkan estetika bunga.",
         "symptoms": ["G07"],
         "treatment": {
@@ -113,6 +118,7 @@ DISEASES = {
     },
     "P06": {
         "name": "Kutu Daun (Aphids)",
+        "image": "p06.jpg",
         "description": "Kutu Daun (Aphids) adalah hama serangga kecil lunak berwarna hijau atau hitam yang mengisap cairan tanaman. Mereka biasanya bergerombol di bagian pucuk daun muda dan kuncup bunga mawar, menyebabkan tanaman kerdil.",
         "symptoms": ["G08", "G10"],
         "treatment": {
@@ -128,6 +134,7 @@ DISEASES = {
     },
     "P07": {
         "name": "Thrips",
+        "image": "p07.jpg",
         "description": "Thrips adalah hama berukuran sangat kecil yang mengisap sel-sel kelopak bunga mawar. Mengakibatkan bercak keperakan atau kecokelatan pada kelopak bunga dan kuncup bunga gagal mekar dengan sempurna.",
         "symptoms": ["G09", "G10"],
         "treatment": {
@@ -143,6 +150,7 @@ DISEASES = {
     },
     "P08": {
         "name": "Tungau Merah (Spider Mites)",
+        "image": "p08.jpg",
         "description": "Tungau Merah (Tetranychidae) berkembang biak sangat cepat dalam kondisi kering dan panas. Mereka membuat jaring halus di bawah permukaan daun dan mengisap cairan sel, sehingga daun menjadi kuning berbintik dan akhirnya rontok.",
         "symptoms": ["G11", "G12"],
         "treatment": {
@@ -158,6 +166,7 @@ DISEASES = {
     },
     "P09": {
         "name": "Kekurangan Zat Besi (Fe)",
+        "image": "p09.jpg",
         "description": "Kekurangan Zat Besi (Klorosis) bukan disebabkan patogen melainkan masalah nutrisi. Terjadi akibat pH tanah terlalu tinggi sehingga besi terikat dan tidak bisa diserap akar. Daun muda menguning sementara tulang daun tetap hijau.",
         "symptoms": ["G13", "G14"],
         "treatment": {
@@ -173,6 +182,7 @@ DISEASES = {
     },
     "P10": {
         "name": "Hama Ulat (Caterpillar)",
+        "image": "p10.jpg",
         "description": "Hama Ulat memakan dedaunan dan kelopak bunga mawar secara fisik. Daun akan terlihat bolong-bolong tidak beraturan dan kelopak bunga tampak tergigit. Ulat biasanya bersembunyi di balik daun atau dalam gulungan daun.",
         "symptoms": ["G15", "G16", "G17"],
         "treatment": {
