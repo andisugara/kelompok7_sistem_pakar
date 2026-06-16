@@ -182,7 +182,7 @@ DISEASES = {
     },
     "P10": {
         "name": "Hama Ulat (Caterpillar)",
-        "image": "p10.jpg",
+        "image": "P10.jpg",
         "description": "Hama Ulat memakan dedaunan dan kelopak bunga mawar secara fisik. Daun akan terlihat bolong-bolong tidak beraturan dan kelopak bunga tampak tergigit. Ulat biasanya bersembunyi di balik daun atau dalam gulungan daun.",
         "symptoms": ["G15", "G16", "G17"],
         "treatment": {
